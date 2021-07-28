@@ -22,7 +22,7 @@ shinyUI(dashboardPage(
                     h4("The dataset comes from an advanced regression competition put on by Kaggle, more information can be found here:"),
                     h4(tags$a(href = "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data?select=test.csv", "housing data")),
                     h4("The purpose of the about tab is to give an overview of what the app does and some information about the data. The purpose of the Data tab is to allow the user to scroll through the data, subset it and save the data to a file. The purpose of the Data Exploration tab is to allow the user to create numerical and graphical summaries of the data. The purpose of the Modeling tab is to allow the user to fit different models to the data, and make a prediction based on certain inputs"),
-                    img(src = "House.jpg", height = 300, width = 300)),
+                    img(src = "House.jpg", height = 150, width = 300, align = "left" )),
             tabItem(tabName = "data"),
             tabItem(tabName = "dexp"),
             tabItem(tabName = "modeling")
