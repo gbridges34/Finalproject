@@ -1,10 +1,14 @@
 
 library(shiny)
 library(shinydashboard)
-
+library(readr)
+library(tidyverse)
+library(caret)
+library(DT)
+library(dplyr)
 # using shinydashboard for some nice features and to accommodate multiple pages
 shinyUI(dashboardPage(
-
+#application title and then the names of each page or tab to be referenced below as per syntax of shinydashboard
     dashboardHeader(title = "Predicting Home Prices", titleWidth = 350),
     dashboardSidebar(
         sidebarMenu(
