@@ -17,7 +17,7 @@ data <- data %>% select(all_of(vars))
 shinyServer(function(input, output) {
     
 #render the summary statistics when user picks summary and a  variable
-    #output$summaryPrint <- renderUI(summary(input$summVarPick))
+    output$summaryPrint <- renderUI(summary(input$summVarPick))
     
 #create datatable for data page
     output$datatable <- DT::renderDataTable({
