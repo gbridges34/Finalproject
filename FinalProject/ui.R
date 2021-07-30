@@ -1,4 +1,8 @@
+#create some useful variables
+vars <- c("LotArea", "BldgType", "HouseStyle", "OverallQual", "OverallCond", "1stFlrSF", "FullBath", "TotRmsAbvGrd", "GarageCars", "GarageArea", "SalePrice")
+plotTypes <- c("scatterPlot", "barPlot")
 
+#packages to be read in
 library(shiny)
 library(shinydashboard)
 library(readr)
@@ -27,8 +31,33 @@ shinyUI(dashboardPage(
                     h4(tags$a(href = "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data?select=test.csv", "housing data")),
                     h4("The purpose of the about tab is to give an overview of what the app does and some information about the data. The purpose of the Data tab is to allow the user to scroll through the data, subset it and save the data to a file. The purpose of the Data Exploration tab is to allow the user to create numerical and graphical summaries of the data. The purpose of the Modeling tab is to allow the user to fit different models to the data, and make a prediction based on certain inputs"),
                     img(src = "House.jpg", height = 150, width = 300, align = "left" )),
-            tabItem(tabName = "data"),
-            tabItem(tabName = "dexp"),
+            #data page
+            tabItem(tabName = "data",
+                    fluidPage(
+                    h2("The Home Prices Dataset"),
+                    DT::dataTableOutput("datatable"),
+                    downloadButton("downloadData", "Download")
+                    )
+                        ),
+            #Data Exploration page, used conditional panels to handle decision tree for user.
+            tabItem(tabName = "dexp",
+                    fluidPage(
+                    selectInput("summOrPlot", "summary or plot?", c("summary", "plot")),
+                    conditionalPanel("input.summOrPlot == 'summary'", selectInput("summVarPick","pick a variable", vars)),
+                    #uiOutput(summaryPrint),
+                    
+                    #if the user picks plot
+                    
+                    conditionalPanel("input.summOrPlot" == "plot", selectInput("plotTypePick", "pick a plot type", plotTypes))
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+)
+                    ),
             tabItem(tabName = "modeling")
         )
     )
