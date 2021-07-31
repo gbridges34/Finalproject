@@ -43,12 +43,12 @@ shinyUI(dashboardPage(
             tabItem(tabName = "dexp",
                     fluidPage(
                     selectInput("summOrPlot", "summary or plot?", c("summary", "plot")),
-                    conditionalPanel("input.summOrPlot == 'summary'", selectInput("summVarPick","pick a variable", vars)),
-                    #uiOutput(summaryPrint),
-                    
+                    conditionalPanel("input.summOrPlot == 'summary'", selectInput("summVarPick","pick a variable", vars),
+                    verbatimTextOutput("summaryPrint"),
+                    ),
                     #if the user picks plot
                     
-                    conditionalPanel("input.summOrPlot" == "plot", selectInput("plotTypePick", "pick a plot type", plotTypes))
+                    conditionalPanel("input.summOrPlot == 'plot'", selectInput("plotTypePick", "pick a plot type", plotTypes))
                     
                     
                     
@@ -58,7 +58,18 @@ shinyUI(dashboardPage(
                     
 )
                     ),
-            tabItem(tabName = "modeling")
+#start modeling tab
+            tabItem(tabName = "modeling",
+                    tabBox(
+                        tabPanel("Modeling Info", "Muliple Linear Regression is very interpretable(?) but is more rigid than tree based bethods because you are fitting one line to the whole data set. Regression Trees are very intuitive, for instance if you were trying to explain the idea to a client, but tend to have higher variance. Random Forests are generally better than bagging because they avoid a single predictor dominating the results since it uses a random subset of predictors each time the algorithm runs"),
+                        tabPanel("Model Fitting",
+                                 sliderInput("split", "How much of the data should go in the test set?", 0, 100, 30),
+                                 selectizeInput(inputId = "modelVar", label = "which variables would you like to use?", choices = vars, multiple = TRUE)
+                                 ),
+                        tabPanel("Prediction"),
+                        width = 12
+                    )
+                    )
         )
     )
 ))
