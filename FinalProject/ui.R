@@ -1,5 +1,6 @@
 #create some useful variables
 vars <- c("LotArea", "BldgType", "HouseStyle", "OverallQual", "OverallCond", "1stFlrSF", "FullBath", "TotRmsAbvGrd", "GarageCars", "GarageArea", "SalePrice")
+#vars2 <- vars %>% select(-c("SalePrice"))  ##
 plotTypes <- c("scatterPlot", "barPlot")
 
 #packages to be read in
@@ -12,6 +13,7 @@ library(DT)
 library(dplyr)
 # using shinydashboard for some nice features and to accommodate multiple pages
 shinyUI(dashboardPage(
+    #withMathJax(), if I can figure it out 
 #application title and then the names of each page or tab to be referenced below as per syntax of shinydashboard
     dashboardHeader(title = "Predicting Home Prices", titleWidth = 350),
     dashboardSidebar(
@@ -61,12 +63,15 @@ shinyUI(dashboardPage(
 #start modeling tab
             tabItem(tabName = "modeling",
                     tabBox(
-                        tabPanel("Modeling Info", "Muliple Linear Regression is very interpretable(?) but is more rigid than tree based bethods because you are fitting one line to the whole data set. Regression Trees are very intuitive, for instance if you were trying to explain the idea to a client, but tend to have higher variance. Random Forests are generally better than bagging because they avoid a single predictor dominating the results since it uses a random subset of predictors each time the algorithm runs"),
+                       # helpText(  
+                            tabPanel("Modeling Info", "Muliple Linear Regression is very interpretable(?) but is more rigid than tree based bethods because you are fitting one line to the whole data set. Regression Trees are very intuitive, for instance if you were trying to explain the idea to a client, but tend to have higher variance. Random Forests are generally better than bagging because they avoid a single predictor dominating the results since it uses a random subset of predictors each time the algorithm runs (and thus they are less correlated. Using a rule of thumb like helpText(m = p/3), is sometimes used when trying to pick a number of predictors to use in Random Forests. Tree based methods, including Random Forests, are better for prediction than interpretation."),
                         tabPanel("Model Fitting",
                                  sliderInput("split", "How much of the data should go in the test set?", 0, 100, 30),
                                  selectizeInput(inputId = "modelVar", label = "which variables would you like to use?", choices = vars, multiple = TRUE)
                                  ),
-                        tabPanel("Prediction"),
+                        tabPanel("Prediction", 
+                                 selectInput("varPredict", "What variable would you like to use?", vars)
+                                 ),
                         width = 12
                     )
                     )
