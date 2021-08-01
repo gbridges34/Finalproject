@@ -14,11 +14,14 @@ plotTypes <- c("scatterPlot", "barPlot")
 data <- data %>% select(all_of(vars))
 #begin server function
 
-shinyServer(function(input, output) {
-    
+shinyServer(function(input, output, session) {
+    output$ex1 <- renderUI({
+        withMathJax(helpText('$$m=\\frac{p}{3}$$'))
+    })
+     
 #render the summary statistics when user picks summary and a  variable
-        answer <- reactive(input$summVarPick)
-    output$summaryPrint <- renderPrint(summary(pull(data, answer)))
+        answer <- reactive({input$summVarPick})
+    output$summaryPrint <- renderPrint(summary(pull(data, answer())))
     
 #create datatable for data page
     output$datatable <- DT::renderDataTable({
