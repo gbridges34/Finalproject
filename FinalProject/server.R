@@ -8,11 +8,18 @@ library(DT)
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(ranger)
 #read in the data and select the columns that I want to use
 dataHouses <- read_csv("train.csv")
 colnames(dataHouses) <- make.names(colnames(dataHouses))
 #create some useful variables
 vars <- c("LotArea", "BldgType", "HouseStyle", "OverallQual", "OverallCond", "FullBath", "TotRmsAbvGrd", "GarageCars", "GarageArea", "SalePrice")
+#create data split
+splitData <- .7
+trainIndex <- createDataPartition(dataHouses$SalePrice, p = splitData, list = FALSE)
+housesTrain <- dataHouses[trainIndex, ]
+housesTest <- dataHouses[-trainIndex, ]
+#for display of variables to select which to use in model removing SalePrice because that is what is being predicted
 removeSale <- c("SalePrice")
 varsPredict <- vars[! vars %in% removeSale]
 plotTypes <- c("scatterPlot", "barPlot")
@@ -21,16 +28,16 @@ dataHouses <- dataHouses %>% select(all_of(vars))
 
 shinyServer(function(input, output, session) {
     #fits for model fitting tab
-    mlrFit <- train(SalePrice ~ ., data = dataHouses, 
+    mlrFit <- train(SalePrice ~ ., data = housesTrain, 
                     method = "lm", 
                     preProcess = c("center", "scale"),
                     trControl = trainControl(method = "cv", number = 10))
-    regTreeFit <- train(SalePrice ~ ., data = dataHouses, 
+    regTreeFit <- train(SalePrice ~ ., data = housesTrain, 
                     method = "rpart", 
                     preProcess = c("center", "scale"),
                     trControl = trainControl(method = "cv", number = 10))
-    rfFit <- train(SalePrice ~ ., data = dataHouses, 
-                    method = "rf", 
+    rfFit <- train(SalePrice ~ ., data = housesTrain, 
+                    method = "ranger", 
                     preProcess = c("center", "scale"),
                     trControl = trainControl(method = "cv", number = 10))
     
@@ -49,9 +56,7 @@ shinyServer(function(input, output, session) {
         barVariable <- reactive({input$varBar})
         scatterVariableX <- reactive({input$varScatterX})
         scatterVariableY <- reactive({input$varScatterY})
-        splitData <- .7
-        train <- sample(1:nrow(dataHouses), size = nrow(dataHouses)*splitData)
-        test <- dplyr::setdiff(1:nrow(dataHouses), train)
+        
 #create datatable for data page
     output$datatable <- DT::renderDataTable({
    dataHouses
@@ -66,7 +71,7 @@ shinyServer(function(input, output, session) {
         plotHouse2 <- ggplot(data = dataHouses, aes(x = scatterVariableX(), y = scatterVariableY()))
         plotHouse2 + geom_point()
     })
-    
+    #output for top of model fitting tab
     output$modelExplanation <- renderText("We will fit three models in order to predict the sale price of the home. Specify which variables you would like to use and we will fit a multiple linear regression model, a regression tree model, and a random forest model")
 # Downloadable csv of selected dataset ----
     output$downloadData <- downloadHandler(

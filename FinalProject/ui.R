@@ -13,6 +13,7 @@ library(DT)
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(ranger)
 # using shinydashboard for some nice features and to accommodate multiple pages
 shinyUI(dashboardPage(
     #withMathJax(), if I can figure it out 
