@@ -11,6 +11,8 @@ library(tidyverse)
 library(caret)
 library(DT)
 library(dplyr)
+library(ggplot2)
+library(plotly)
 # using shinydashboard for some nice features and to accommodate multiple pages
 shinyUI(dashboardPage(
     #withMathJax(), if I can figure it out 
@@ -50,9 +52,21 @@ shinyUI(dashboardPage(
                     
                     #if the user picks plot
                     
-                    conditionalPanel("input.summOrPlot == 'plot'", selectInput("plotTypePick", "pick a plot type", plotTypes)),
-                    conditionalPanel("input.plotTypePick == 'barPlot'", selectInput("varBar", "pick a variable", vars)),
-                    conditionalPanel("input.plotTypePick == 'scatterPlot'", selectInput("varScatter", "pick two variables", vars))
+                    conditionalPanel("input.summOrPlot == 'plot'", selectInput("plotTypePick", "pick a plot type", plotTypes, selected = "barPlot"),
+                    conditionalPanel("input.plotTypePick == 'barPlot'", selectInput("varBar", "pick a variable", vars),
+                        plotlyOutput("plotObject")             
+                                     ),
+                    conditionalPanel("input.plotTypePick == 'scatterPlot'", selectInput("varScatterX", "which variable for X?", vars)),  
+                    conditionalPanel("input.plotTypePick == 'scatterPlot'", selectInput("VarScatterY", "which variable for Y?", vars, selected = "SalePrice"), plotOutput("plotObject2"))
+                                     )
+                    
+                    
+                    
+                    
+                    
+                    
+            
+                    
                     
                     
                     
@@ -64,12 +78,12 @@ shinyUI(dashboardPage(
 #start modeling tab
             tabItem(tabName = "modeling",
                     tabBox(
-                       # helpText(  
                             tabPanel("Modeling Info", 
                                      "Muliple Linear Regression is very interpretable but is more rigid than tree based bethods because you are fitting one line to the whole data set. Regression Trees are very intuitive, for instance if you were trying to explain the idea to a client, but tend to have higher variance. Random Forests are generally better than bagging because they avoid a single predictor dominating the results since it uses a random subset of predictors each time the algorithm runs (and thus they are less correlated). A rule of thumb, like the one shown below using MathJax, is sometimes used when trying to pick a number of predictors to use in Random Forests.  Tree based methods, including Random Forests, are better for prediction than interpretation.",
                                      uiOutput("ex1")),
                             
                         tabPanel("Model Fitting",
+                                 textOutput("modelExplanation"),
                                  sliderInput("split", "How much of the data should go in the test set?", 0, 100, 30),
                                  selectizeInput(inputId = "modelVar", label = "which variables would you like to use?", choices = vars, multiple = TRUE)
                                  ),
