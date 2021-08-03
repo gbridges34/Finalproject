@@ -54,7 +54,7 @@ shinyUI(dashboardPage(
                     #if the user picks plot
                     
                     conditionalPanel("input.summOrPlot == 'plot'", selectInput("plotTypePick", "pick a plot type", plotTypes, selected = "barPlot"),
-                    conditionalPanel("input.plotTypePick == 'barPlot'", selectInput("varBar", "pick a variable", vars),
+                    conditionalPanel("input.plotTypePick == 'barPlot'", selectInput("varBar", "pick a variable", vars, selected = "HouseStyle"),
                         plotlyOutput("plotObject")             
                                      ),
                     conditionalPanel("input.plotTypePick == 'scatterPlot'", selectInput("varScatterX", "which variable for X?", vars)),  
@@ -92,9 +92,21 @@ shinyUI(dashboardPage(
                                  selectInput("repeatedOrNot", "what method would you like to use for cross-validation?",choices = c("repeated CV", "CV")),
                                  numericInput("numFolds", "how many folds would you like to use?", value = 5, min = 1, max = 100)
                                  ),
-                        tabPanel("Prediction", 
-                                 selectInput("varPredict", "What variable would you like to use?", vars)
+                        tabPanel("Prediction",
+                                 numericInput("lotArea", "Lot Area", 0),
+                                 selectInput("buildType", "BldgType", choices = c("1Fam", "2fmCon", "Duplex", "Twnhs", "TwnhsE", "")),
+                                 selectInput("houseStyle", "HouseStyle", choices = c("1.5Fin", "1.5Unf", "1Story", "2.5Fin", "2.5Unf", "2Story", "SFoyer", "SLvl")),
+                                 numericInput("OverQual", "Overall Quality", min = 1, max = 10, step = 1, value = 1),
+                                 numericInput("OverCond", "Overall Condition", min = 1, max = 10, step = 1, value = 1),
+                                 numericInput("1sf", "First Floor Square Feet", min = 0, value = 1),
+                                 numericInput("fullBath", "Full Bathrooms", min = 0, value = 1, step = 1),
+                                 numericInput("totRoomsAboveGround", "Total Rooms Above Ground", min = 0, value = 1),
+                                 numericInput("garageCars", "Garage Capacity (in # of cars)", min = 0, value = 0, max = 15),
+                                 numericInput("garageArea", "Garage Area", min = 0, value = 0)
                                  ),
+                                
+    
+                        
                         width = 12
                     )
                     )
